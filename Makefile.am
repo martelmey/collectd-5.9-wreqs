@@ -931,6 +931,16 @@ dns_la_LDFLAGS = $(PLUGIN_LDFLAGS) $(BUILD_WITH_LIBPCAP_LDFLAGS)
 dns_la_LIBADD = $(BUILD_WITH_LIBPCAP_LIBS)
 endif
 
+if BUILD_PLUGIN_DOCKER
+pkglib_LTLIBRARIES += docker.la
+docker_la_SOURCES = \
+	src/docker.c
+docker_la_CFLAGS = $(AM_CFLAGS) $(BUILD_WITH_LIBCURL_CFLAGS)
+docker_la_CPPFLAGS = $(AM_CPPFLAGS) $(BUILD_WITH_LIBYAJL_CPPFLAGS)
+docker_la_LDFLAGS = $(PLUGIN_LDFLAGS) $(BUILD_WITH_LIBYAJL_LDFLAGS)
+docker_la_LIBADD = $(BUILD_WITH_LIBCURL_LIBS) $(BUILD_WITH_LIBYAJL_LIBS)
+endif
+
 if BUILD_PLUGIN_DPDKEVENTS
 pkglib_LTLIBRARIES += dpdkevents.la
 dpdkevents_la_SOURCES = src/dpdkevents.c src/utils/dpdk/dpdk.c src/utils/dpdk/dpdk.h
@@ -1631,6 +1641,14 @@ processes_la_LIBADD += libtaskstats.la
 endif
 endif
 
+if BUILD_PLUGIN_PROCESSMON
+pkglib_LTLIBRARIES += processmon.la
+processmon_la_SOURCES = src/processmon.c
+processmon_la_CPPFLAGS = $(AM_CPPFLAGS)
+processmon_la_LDFLAGS = $(PLUGIN_LDFLAGS)
+processmon_la_LIBADD =
+endif
+
 if BUILD_PLUGIN_PROTOCOLS
 pkglib_LTLIBRARIES += protocols.la
 protocols_la_SOURCES = src/protocols.c
@@ -2083,6 +2101,22 @@ if BUILD_PLUGIN_WRITE_SYSLOG
 pkglib_LTLIBRARIES += write_syslog.la
 write_syslog_la_SOURCES = src/write_syslog.c
 write_syslog_la_LDFLAGS = $(PLUGIN_LDFLAGS)
+endif
+
+if BUILD_PLUGIN_WRITE_SPLUNK
+pkglib_LTLIBRARIES += write_splunk.la
+write_splunk_la_SOURCES = src/write_splunk.c
+write_splunk_la_CFLAGS = $(AM_CFLAGS) $(BUILD_WITH_LIBCURL_CFLAGS)
+write_splunk_la_LDFLAGS = $(PLUGIN_LDFLAGS)
+write_splunk_la_LIBADD = $(BUILD_WITH_LIBCURL_LIBS)
+
+test_plugin_write_splunk_SOURCES = src/write_splunk_test.c \
+	src/daemon/configfile.c \
+	src/daemon/types_list.c
+test_plugin_write_splunk_CFLAGS = $(AM_CFLAGS) $(BUILD_WITH_LIBCURL_CFLAGS)
+test_plugin_write_splunk_LDFLAGS = $(PLUGIN_LDFLAGS)
+test_plugin_write_splunk_LDADD =  liboconfig.la libplugin_mock.la $(BUILD_WITH_LIBCURL_LIBS)
+check_PROGRAMS += test_plugin_write_splunk
 endif
 
 if BUILD_PLUGIN_WRITE_TSDB

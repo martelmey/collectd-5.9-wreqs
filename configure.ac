@@ -6380,6 +6380,7 @@ plugin_curl_json="no"
 plugin_curl_xml="no"
 plugin_df="no"
 plugin_disk="no"
+plugin_docker="no"
 plugin_drbd="no"
 plugin_dpdkevents="no"
 plugin_dpdkstat="no"
@@ -6411,6 +6412,7 @@ plugin_pcie_errors="no"
 plugin_perl="no"
 plugin_pinba="no"
 plugin_processes="no"
+plugin_processmon="no"
 plugin_protocols="no"
 plugin_python="no"
 plugin_serial="no"
@@ -6459,6 +6461,7 @@ if test "x$ac_system" = "xLinux"; then
   plugin_nfs="yes"
   plugin_numa="yes"
   plugin_processes="yes"
+  plugin_processmon="yes"
   plugin_protocols="yes"
   plugin_serial="yes"
   plugin_swap="yes"
@@ -6591,6 +6594,10 @@ fi
 
 if test "x$with_libcurl" = "xyes" && test "x$with_libssl" = "xyes" && test "x$with_libyajl" = "xyes" && test "x$with_libyajl2" = "xyes"; then
   plugin_write_stackdriver="yes"
+fi
+
+if test "x$with_libcurl" = "xyes" && test "x$with_libyajl" = "xyes"; then
+  plugin_docker="yes"
 fi
 
 if test "x$with_libcurl" = "xyes" && test "x$with_libxml2" = "xyes"; then
@@ -6808,6 +6815,7 @@ AC_PLUGIN([dbi],                 [$with_libdbi],              [General database 
 AC_PLUGIN([df],                  [$plugin_df],                [Filesystem usage statistics])
 AC_PLUGIN([disk],                [$plugin_disk],              [Disk usage statistics])
 AC_PLUGIN([dns],                 [$with_libpcap],             [DNS traffic analysis])
+AC_PLUGIN([docker],              [$plugin_docker],            [Docker container statistics])
 AC_PLUGIN([dpdkevents],          [$plugin_dpdkevents],        [Events from DPDK])
 AC_PLUGIN([dpdkstat],            [$plugin_dpdkstat],          [Stats from DPDK])
 AC_PLUGIN([drbd],                [$plugin_drbd],              [DRBD statistics])
@@ -6883,6 +6891,7 @@ AC_PLUGIN([ping],                [$with_liboping],            [Network latency s
 AC_PLUGIN([postgresql],          [$with_libpq],               [PostgreSQL database statistics])
 AC_PLUGIN([powerdns],            [yes],                       [PowerDNS statistics])
 AC_PLUGIN([processes],           [$plugin_processes],         [Process statistics])
+AC_PLUGIN([processmon],          [$plugin_processmon],        [Process monitoring])
 AC_PLUGIN([protocols],           [$plugin_protocols],         [Protocol (IP, TCP, ...) statistics])
 AC_PLUGIN([python],              [$plugin_python],            [Embed a Python interpreter])
 AC_PLUGIN([redis],               [$with_libhiredis],          [Redis plugin])
@@ -6933,6 +6942,7 @@ AC_PLUGIN([write_prometheus],    [$plugin_write_prometheus],  [Prometheus write 
 AC_PLUGIN([write_redis],         [$with_libhiredis],          [Redis output plugin])
 AC_PLUGIN([write_riemann],       [$with_libriemann_client],   [Riemann output plugin])
 AC_PLUGIN([write_sensu],         [yes],                       [Sensu output plugin])
+AC_PLUGIN([write_splunk],        [$with_libcurl],             [Splunk output plugin])
 AC_PLUGIN([write_stackdriver],   [$plugin_write_stackdriver], [Google Stackdriver Monitoring output plugin])
 AC_PLUGIN([write_syslog],        [yes],                       [Syslog output plugin])
 AC_PLUGIN([write_tsdb],          [yes],                       [TSDB output plugin])
@@ -7237,6 +7247,7 @@ AC_MSG_RESULT([    dbi . . . . . . . . . $enable_dbi])
 AC_MSG_RESULT([    df  . . . . . . . . . $enable_df])
 AC_MSG_RESULT([    disk  . . . . . . . . $enable_disk])
 AC_MSG_RESULT([    dns . . . . . . . . . $enable_dns])
+AC_MSG_RESULT([    docker  . . . . . . . $enable_docker])
 AC_MSG_RESULT([    dpdkevents. . . . . . $enable_dpdkevents])
 AC_MSG_RESULT([    dpdkstat  . . . . . . $enable_dpdkstat])
 AC_MSG_RESULT([    drbd  . . . . . . . . $enable_drbd])
@@ -7311,6 +7322,7 @@ AC_MSG_RESULT([    ping  . . . . . . . . $enable_ping])
 AC_MSG_RESULT([    postgresql  . . . . . $enable_postgresql])
 AC_MSG_RESULT([    powerdns  . . . . . . $enable_powerdns])
 AC_MSG_RESULT([    processes . . . . . . $enable_processes])
+AC_MSG_RESULT([    processmon  . . . . . $enable_processmon])
 AC_MSG_RESULT([    protocols . . . . . . $enable_protocols])
 AC_MSG_RESULT([    python  . . . . . . . $enable_python])
 AC_MSG_RESULT([    redis . . . . . . . . $enable_redis])
@@ -7363,6 +7375,7 @@ AC_MSG_RESULT([    write_riemann . . . . $enable_write_riemann])
 AC_MSG_RESULT([    write_sensu . . . . . $enable_write_sensu])
 AC_MSG_RESULT([    write_stackdriver . . $enable_write_stackdriver])
 AC_MSG_RESULT([    write_syslog . .  . . $enable_write_syslog])
+AC_MSG_RESULT([    write_splunk  . . . . $enable_write_splunk])
 AC_MSG_RESULT([    write_tsdb  . . . . . $enable_write_tsdb])
 AC_MSG_RESULT([    xencpu  . . . . . . . $enable_xencpu])
 AC_MSG_RESULT([    xmms  . . . . . . . . $enable_xmms])

@@ -79,6 +79,11 @@ int plugin_register_complex_read(const char *group, const char *name,
   return ENOTSUP;
 }
 
+int plugin_register_flush(const char *name, plugin_flush_cb callback,
+                          user_data_t const *user_data) {
+  return ENOTSUP;
+}
+
 int plugin_register_shutdown(const char *name, int (*callback)(void)) {
   return ENOTSUP;
 }

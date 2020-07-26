@@ -115,6 +115,7 @@
 #@BUILD_PLUGIN_DF_TRUE@LoadPlugin df
 #@BUILD_PLUGIN_DISK_TRUE@LoadPlugin disk
 #@BUILD_PLUGIN_DNS_TRUE@LoadPlugin dns
+#@BUILD_PLUGIN_DOCKER_TRUE@LoadPlugin docker
 #@BUILD_PLUGIN_DPDKEVENTS_TRUE@LoadPlugin dpdkevents
 #@BUILD_PLUGIN_DPDKSTAT_TRUE@LoadPlugin dpdkstat
 #@BUILD_PLUGIN_DRBD_TRUE@LoadPlugin drbd
@@ -180,6 +181,7 @@
 #@BUILD_PLUGIN_POSTGRESQL_TRUE@LoadPlugin postgresql
 #@BUILD_PLUGIN_POWERDNS_TRUE@LoadPlugin powerdns
 #@BUILD_PLUGIN_PROCESSES_TRUE@LoadPlugin processes
+#@BUILD_PLUGIN_PROCESSMON_TRUE@LoadPlugin processmon
 #@BUILD_PLUGIN_PROTOCOLS_TRUE@LoadPlugin protocols
 #@BUILD_PLUGIN_PYTHON_TRUE@LoadPlugin python
 #@BUILD_PLUGIN_REDIS_TRUE@LoadPlugin redis
@@ -224,6 +226,7 @@
 #@BUILD_PLUGIN_WRITE_SENSU_TRUE@LoadPlugin write_sensu
 #@BUILD_PLUGIN_WRITE_STACKDRIVER_TRUE@LoadPlugin write_stackdriver
 #@BUILD_PLUGIN_WRITE_SYSLOG_TRUE@LoadPlugin write_syslog
+#@BUILD_PLUGIN_WRITE_SPLUNK_TRUE@LoadPlugin write_splunk
 #@BUILD_PLUGIN_WRITE_TSDB_TRUE@LoadPlugin write_tsdb
 #@BUILD_PLUGIN_XENCPU_TRUE@LoadPlugin xencpu
 #@BUILD_PLUGIN_XMMS_TRUE@LoadPlugin xmms
@@ -565,6 +568,12 @@
 #	Interface "eth0"
 #	IgnoreSource "192.168.0.1"
 #	SelectNumericQueryTypes true
+#</Plugin>
+
+#<Plugin docker>
+#	DockerSock "/var/run/docker.sock"
+#	ApiVersion "v1.30"
+#	ReadBufferSize 16384
 #</Plugin>
 
 #<Plugin "dpdkevents">
@@ -1270,6 +1279,12 @@
 #	</Process>
 #</Plugin>
 
+#<Plugin processmon>
+#	ReadIO true
+#	WhiteList "regex_whitelist"
+#	BlackList "regex_blacklist"
+#</Plugin>
+
 #<Plugin protocols>
 #	Value "/^Tcp:/"
 #	IgnoreSelected false
@@ -1826,6 +1841,28 @@
 #		StoreRates false
 #		AlwaysAppendDS false
 #	</Node>
+#</Plugin>
+
+#<Plugin write_splunk>
+#      Dimension "key:value"
+#      Port "8088"
+#      Token "xyz" # hec token
+#      Server "localhost"
+#      CAInfo "/etc/certs/cabundle.pem" # specify CURL_CAINFO
+#      CAPath "/etc/cert-dir" # specify CURL_CAPATH
+#      Batchsize 1024
+#      Buffersize 1048576
+#      PostTimeout 30
+#      Udpport 3333
+#      Ssl true
+#      Verifyssl false
+#      SplunkMetricTransform true
+#      DiskAsDimensions true
+#      InterfaceAsDimensions true
+#      CpuAsDimensions true
+#      DfAsDimensions true
+#      StoreRates true
+#      UseUdp false
 #</Plugin>
 
 #<Plugin write_tsdb>
